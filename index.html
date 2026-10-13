@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crocodile Wallet - Premium Secure Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #022c22;
+            background-image: radial-gradient(circle at 50% 0%, #064e3b 0%, #022c22 100%);
+        }
+        .font-mono-card { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #022c22; }
+        ::-webkit-scrollbar-thumb { background: #0f766e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0d9488; }
+        .scales-bg {
+            background-image: radial-gradient(#115e59 1px, transparent 1px), radial-gradient(#115e59 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-position: 0 0, 8px 8px;
+        }
+
+        /* LOGIN BACKGROUND ANIMATIONS */
+        @keyframes vault-float-left {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-30px) rotate(8deg) scale(1.1); opacity: 0.45; }
+            100% { transform: translateY(0px) rotate(0deg) scale(1); opacity: 0.2; }
+        }
+        @keyframes vault-float-right {
+            0% { transform: translateY(0px) rotate(0deg) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-40px) rotate(-10deg) scale(1.15); opacity: 0.5; }
+            100% { transform: translateY(0px) rotate(0deg) scale(1); opacity: 0.2; }
+        }
+        @keyframes gold-sparkle {
+            0% { transform: translateY(-80px) scale(0.8); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(140px) scale(1.2); opacity: 0; }
+        }
+        .animate-vault-l { animation: vault-float-left 8s ease-in-out infinite; }
+        .animate-vault-r { animation: vault-float-right 10s ease-in-out infinite 2s; }
+        .animate-gold-1 { animation: gold-sparkle 4s linear infinite; }
+        .animate-gold-2 { animation: gold-sparkle 5.5s linear infinite 1.5s; }
+        .animate-gold-3 { animation: gold-sparkle 4.8s linear infinite 3s; }
+
+        /* DASHBOARD INSIDE ANIMATIONS */
+        @keyframes d-float-1 { 
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.15; } 
+            50% { transform: translateY(-50px) rotate(15deg); opacity: 0.35; } 
+        }
+        @keyframes d-float-2 { 
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.1; } 
+            50% { transform: translateY(-80px) rotate(-20deg) scale(1.2); opacity: 0.25; } 
+        }
+        @keyframes d-float-3 { 
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.2; } 
+            50% { transform: translateY(-40px) rotate(10deg); opacity: 0.4; } 
+        }
+        @keyframes d-pulse-slow {
+            0%, 100% { opacity: 0.05; transform: scale(1); }
+            50% { opacity: 0.15; transform: scale(1.05); }
+        }
+        .dash-float-1 { animation: d-float-1 9s ease-in-out infinite; }
+        .dash-float-2 { animation: d-float-2 14s ease-in-out infinite; }
+        .dash-float-3 { animation: d-float-3 11s ease-in-out infinite; }
+        .dash-pulse-bg { animation: d-pulse-slow 8s ease-in-out infinite; }
+    </style>
+</head>
+<body class="text-emerald-100 min-h-screen flex flex-col justify-between overflow-x-hidden relative">
+
+    <!-- DASHBOARD INSIDE AMBIENT ANIMATIONS -->
+    <div id="dashboard-bg-anims" class="fixed inset-0 pointer-events-none z-0 hidden overflow-hidden">
+        <div class="absolute -top-20 -left-20 text-emerald-500 text-[35rem] dash-pulse-bg"><i class="fa-solid fa-dragon"></i></div>
+        <div class="absolute bottom-10 left-1/4 text-amber-500 text-7xl dash-float-1"><i class="fa-solid fa-coins"></i></div>
+        <div class="absolute top-1/4 right-1/4 text-teal-500 text-9xl dash-float-2"><i class="fa-solid fa-money-bill-wave"></i></div>
+        <div class="absolute bottom-1/3 right-10 text-emerald-400 text-8xl dash-float-3"><i class="fa-solid fa-leaf"></i></div>
+        <div class="absolute top-20 right-1/2 text-amber-300 text-6xl dash-float-1" style="animation-delay: 2.5s;"><i class="fa-solid fa-sack-dollar"></i></div>
+        <div class="absolute bottom-20 left-20 text-emerald-300 text-8xl dash-float-2" style="animation-delay: 4s;"><i class="fa-solid fa-piggy-bank"></i></div>
+    </div>
+
+    <!-- PROFILE DETAILS MODAL -->
+    <div id="profile-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-emerald-950 border border-emerald-900 max-w-sm w-full rounded-2xl p-6 shadow-2xl relative">
+            <button onclick="window.closeProfileModal()" class="absolute top-4 right-4 text-emerald-400 hover:text-emerald-100 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-4">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-600 to-amber-500 flex items-center justify-center border-2 border-emerald-400/30 mx-auto mb-2 text-slate-900 text-3xl shadow-lg">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="font-bold text-lg text-emerald-100" id="profile-name">Verified Name</h3>
+                <p class="text-[10px] text-amber-400 uppercase tracking-widest font-bold">Verified Crocodile Member</p>
+            </div>
+            <div class="space-y-3 text-xs border-t border-emerald-900/60 pt-4 text-emerald-300">
+                <div class="flex justify-between border-b border-emerald-900/30 pb-2">
+                    <span class="text-emerald-500 font-semibold">Registered Age:</span>
+                    <span id="profile-age" class="font-mono text-slate-200">18 yrs</span>
+                </div>
+                <div class="flex justify-between border-b border-emerald-900/30 pb-2">
+                    <span class="text-emerald-500 font-semibold">Gmail Address:</span>
+                    <span id="profile-email" class="font-mono text-slate-200">email@gmail.com</span>
+                </div>
+                <div class="flex justify-between border-b border-emerald-900/30 pb-2">
+                    <span class="text-emerald-500 font-semibold">Registered Mobile:</span>
+                    <span id="profile-phone" class="font-mono text-slate-200">09170000000</span>
+                </div>
+                <div class="flex justify-between pb-1">
+                    <span class="text-emerald-500 font-semibold">Swamp Territory:</span>
+                    <span id="profile-address" class="font-mono text-slate-200">Manila Swamp, PH</span>
+                </div>
+            </div>
+            <div class="flex justify-end mt-5">
+                <button onclick="window.closeProfileModal()" class="px-4 py-2 bg-emerald-900/50 hover:bg-emerald-900 text-emerald-300 rounded-lg text-xs font-bold transition">Close Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PURGE CONFIRMATION MODAL -->
+    <div id="purge-confirm-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-emerald-950 border border-emerald-900 max-w-xs w-full rounded-2xl p-6 shadow-2xl text-center">
+            <div class="text-rose-500 text-4xl mb-3">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h4 class="font-bold text-emerald-100 text-sm mb-2">Purge Transaction Ledger?</h4>
+            <p class="text-[11px] text-emerald-400/80 mb-4">This will reset your ledger to the initial ₱5,000.00 starter balance. This action is irreversible.</p>
+            <div class="flex gap-2 justify-center">
+                <button onclick="window.closePurgeModal()" class="px-3 py-1.5 bg-emerald-900/60 text-emerald-300 rounded-lg text-xs font-bold">Cancel</button>
+                <button onclick="window.executePurgeHistory()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition">Reset Ledger</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="auth-container" class="flex-grow flex items-center justify-center p-4 relative overflow-hidden min-h-[85vh]">
+        <!-- LOGIN SLIDESHOW LAYER -->
+        <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <div class="absolute top-8 left-8 text-emerald-400/25 text-8xl animate-vault-l flex flex-col items-center">
+                <i class="fa-solid fa-vault"></i>
+                <span class="text-[10px] text-emerald-300/40 font-mono tracking-widest mt-1 uppercase font-bold">Croc Vault #1</span>
+            </div>
+            <div class="absolute bottom-10 right-10 text-amber-400/25 text-9xl animate-vault-r flex flex-col items-center">
+                <i class="fa-solid fa-piggy-bank"></i>
+                <span class="text-[10px] text-amber-300/40 font-mono tracking-widest mt-1 uppercase font-bold">Apex Treasury</span>
+            </div>
+            <div class="absolute top-1/3 right-12 text-teal-400/20 text-7xl animate-vault-l" style="animation-delay: 1.5s;">
+                <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <div class="absolute bottom-1/4 left-12 text-amber-300/20 text-7xl animate-vault-r" style="animation-delay: 3s;">
+                <i class="fa-solid fa-sack-dollar"></i>
+            </div>
+            <div class="absolute top-10 left-1/3 text-amber-400/40 text-2xl animate-gold-1">
+                <i class="fa-solid fa-coins"></i>
+            </div>
+            <div class="absolute top-16 right-1/3 text-amber-300/40 text-3xl animate-gold-2">
+                <i class="fa-solid fa-coins"></i>
+            </div>
+            <div class="absolute top-24 left-1/2 text-emerald-400/30 text-xl animate-gold-3">
+                <i class="fa-solid fa-gem"></i>
+            </div>
+        </div>
+
+        <div class="bg-emerald-950/90 border border-emerald-900 max-w-lg w-full rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden scales-bg z-10">
+            <div class="absolute -right-16 -top-16 w-36 h-36 bg-emerald-500/15 rounded-full blur-2xl"></div>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-amber-500 flex items-center justify-center shadow-lg shadow-emerald-900/40 border border-emerald-400/30 mx-auto mb-3">
+                    <i class="fa-solid fa-dragon text-slate-900 text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-amber-300 bg-clip-text text-transparent">Crocodile Wallet</h1>
+                <p class="text-xs text-emerald-400/80 font-medium tracking-widest uppercase mt-1">Apex Web-Banking Platform</p>
+                <div class="inline-flex items-center gap-1.5 bg-emerald-900/50 px-2 py-0.5 rounded text-[9px] text-emerald-400 font-bold border border-emerald-800 mt-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="auth-connection-status">Realtime DB Active</span>
+                </div>
+            </div>
+
+            <!-- Switch Tab System -->
+            <div id="auth-tabs" class="flex bg-emerald-950 p-1 rounded-lg border border-emerald-900 text-xs mb-6">
+                <button onclick="window.toggleAuthMode('login')" id="tab-login" class="flex-1 py-2 text-center rounded-md font-bold transition duration-200 bg-emerald-500 text-slate-950">
+                    Sign In
+                </button>
+                <button onclick="window.toggleAuthMode('register')" id="tab-register" class="flex-1 py-2 text-center rounded-md font-bold transition duration-200 text-emerald-400 hover:text-emerald-200">
+                    Create Verified Account
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="window.handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1.5">Username or Gmail</label>
+                    <input type="text" id="login-user" required placeholder="Enter username or email..." class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1.5">Password</label>
+                    <div class="relative">
+                        <input type="password" id="login-pass" required placeholder="••••••••" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-2 pl-3 pr-10 text-sm focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                        <button type="button" onclick="window.togglePasswordVisibility('login-pass', this)" class="absolute right-3 top-2.5 text-emerald-400 hover:text-emerald-200">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="text-right">
+                    <button type="button" onclick="window.toggleAuthMode('forgot')" class="text-xs text-amber-400 hover:text-amber-300 hover:underline">Forgot Password?</button>
+                </div>
+
+                <button id="login-submit-btn" type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs rounded-xl uppercase tracking-wider transition duration-300 shadow-lg shadow-emerald-950">
+                    Access Portal <i class="fa-solid fa-unlock ml-1.5"></i>
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" onsubmit="window.handleRegister(event)" class="space-y-4 hidden">
+                <div class="bg-emerald-900/20 border border-emerald-900/50 p-3 rounded-lg">
+                    <p class="text-[9px] font-extrabold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-shield-halved"></i> KYC Profile Verification Details</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
+                        <div>
+                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Your Full Name</label>
+                            <input type="text" id="reg-name" required placeholder="e.g. Raptor" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 px-3 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Age</label>
+                            <input type="number" id="reg-age" required min="18" max="99" placeholder="e.g. 21" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 px-3 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Mobile Number</label>
+                            <input type="tel" id="reg-phone" required maxlength="11" placeholder="e.g. 09171234567" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 px-3 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Gmail Address</label>
+                            <input type="email" id="reg-email" required placeholder="username@gmail.com" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 px-3 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Territory / Address</label>
+                        <input type="text" id="reg-address" required placeholder="e.g. Manila Swamp, PH" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 px-3 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                    </div>
+                </div>
+
+                <div class="border-t border-emerald-900/60 pt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="md:col-span-2">
+                        <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Choose Username</label>
+                        <input type="text" id="reg-user" required placeholder="Select username..." class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 px-3 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Create Password</label>
+                        <div class="relative">
+                            <input type="password" id="reg-pass" required placeholder="••••••••" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 pl-3 pr-8 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                            <button type="button" onclick="window.togglePasswordVisibility('reg-pass', this)" class="absolute right-2 top-2 text-emerald-400 hover:text-emerald-200">
+                                <i class="fa-solid fa-eye text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <input type="password" id="reg-pass-confirm" required placeholder="••••••••" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 pl-3 pr-8 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100 placeholder-emerald-700/60">
+                            <button type="button" onclick="window.togglePasswordVisibility('reg-pass-confirm', this)" class="absolute right-2 top-2 text-emerald-400 hover:text-emerald-200">
+                                <i class="fa-solid fa-eye text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs rounded-xl uppercase tracking-wider transition duration-300 shadow-lg shadow-emerald-950">
+                    Verify & Initialize Ledger <i class="fa-solid fa-user-check ml-1.5"></i>
+                </button>
+            </form>
+
+            <!-- Reset Password Form -->
+            <form id="reset-form" onsubmit="window.handleResetPassword(event)" class="space-y-4 hidden">
+                <div class="bg-amber-950/20 border border-amber-900/50 p-3 rounded-lg mb-2">
+                    <p class="text-[9px] font-extrabold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-key"></i> Password Recovery Channel</p>
+                    <p class="text-[10px] text-emerald-400/80 mt-1">Provide your verified username and registered Gmail address to receive an OTP code to configure a new password.</p>
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Username</label>
+                    <input type="text" id="reset-user" required placeholder="Your username..." class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-emerald-500 text-emerald-100">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Registered Gmail</label>
+                    <input type="email" id="reset-email" required placeholder="your.name@gmail.com" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-2 px-3 text-sm focus:outline-none focus:border-emerald-500 text-emerald-100">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">New Password</label>
+                        <div class="relative">
+                            <input type="password" id="reset-pass" required placeholder="••••••••" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 pl-3 pr-8 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100">
+                            <button type="button" onclick="window.togglePasswordVisibility('reset-pass', this)" class="absolute right-2 top-2 text-emerald-400 hover:text-emerald-200">
+                                <i class="fa-solid fa-eye text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-emerald-400 uppercase mb-1">Confirm New Password</label>
+                        <div class="relative">
+                            <input type="password" id="reset-pass-confirm" required placeholder="••••••••" class="w-full bg-emerald-900/40 border border-emerald-800 rounded-lg py-1.5 pl-3 pr-8 text-xs focus:outline-none focus:border-emerald-500 text-emerald-100">
+                            <button type="button" onclick="window.togglePasswordVisibility('reset-pass-confirm', this)" class="absolute right-2 top-2 text-emerald-400 hover:text-emerald-200">
+                                <i class="fa-solid fa-eye text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="button" onclick="window.toggleAuthMode('login')" class="w-1/3 py-2.5 bg-emerald-900/60 hover:bg-emerald-800 text-emerald-300 font-bold text-xs rounded-xl transition uppercase">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-2/3 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold text-xs rounded-xl uppercase tracking-wider transition duration-300 shadow-lg">
+                        Send OTP & Reset <i class="fa-solid fa-envelope ml-1"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DESKTOP DASHBOARD HEADER -->
+    <nav id="app-nav" class="border-b border-emerald-900 bg-emerald-950/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4 hidden">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-emerald-600 to-amber-500 flex items-center justify-center shadow-lg shadow-emerald-900/40 border border-emerald-400/30">
+                    <i class="fa-solid fa-dragon text-slate-900 text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-amber-300 bg-clip-text text-transparent">Crocodile Wallet</h1>
+                    <p class="text-[10px] text-amber-400/80 font-medium tracking-widest uppercase">Apex Web-Banking Platform</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-4 text-sm bg-emerald-950/90 px-4 py-2 rounded-xl border border-emerald-800">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="database-sync-pulse"></span>
+                    <span class="text-xs font-semibold text-emerald-300" id="database-sync-status">Realtime DB Active</span>
+                </div>
+                <div class="flex items-center gap-2 border-l border-emerald-800 pl-4">
+                    <span class="text-xs text-slate-300 font-bold" id="user-display-name">Apex User</span>
+                    <button onclick="window.openProfileModal()" class="hover:text-amber-300 transition-colors p-1.5 bg-emerald-900/40 rounded-lg flex items-center gap-1.5 ml-2" title="View Profile Details">
+                        <i class="fa-solid fa-circle-user text-emerald-400"></i> 
+                        <span class="hidden sm:inline text-xs font-bold">My Profile</span>
+                    </button>
+                    <button onclick="window.handleLogout()" class="hover:text-rose-400 transition-colors p-1.5 bg-rose-950/30 text-rose-300 border border-rose-900/40 rounded-lg ml-2" title="Sign Out">
+                        <i class="fa-solid fa-power-off"></i> <span class="hidden sm:inline text-xs ml-1 font-bold">Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN WEB INTERFACE -->
+    <main id="app-container" class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 hidden z-10 relative">
+
+        <!-- LEFT COLUMN: SIDEBAR -->
+        <aside id="dashboard-sidebar" class="col-span-1 lg:col-span-4 flex flex-col gap-6">
+            
+            <div id="swamp-balance-hub" class="rounded-2xl p-6 border border-emerald-800 bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-950 shadow-2xl relative overflow-hidden group scales-bg">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <p class="text-[10px] text-amber-400 uppercase tracking-widest font-bold">Swamp Security Asset Channel</p>
+                        <p class="text-xs text-emerald-400" id="wallet-name-label">Active Wallet</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-emerald-900/40 px-2.5 py-1 rounded-full border border-emerald-700/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span class="text-[9px] font-extrabold tracking-widest uppercase text-emerald-300">Live Secure</span>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <p class="text-[9px] text-emerald-500 uppercase tracking-wider font-bold">Secure Mobile Anchor</p>
+                    <div class="flex items-center gap-2 mt-0.5 text-slate-200">
+                        <i class="fa-solid fa-phone text-xs text-emerald-400"></i>
+                        <p class="font-mono-card text-sm tracking-widest font-bold" id="hub-phone-display">0917-123-4567</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex items-center gap-1.5 text-emerald-400/80 text-[9px] font-bold tracking-wider mb-1">
+                        <span>AVAILABLE LIQUID BALANCE</span>
+                        <span onclick="window.toggleCardBalanceVisibility();" class="hover:text-amber-300 cursor-pointer p-1">
+                            <i class="fa-solid fa-eye text-emerald-400" id="toggle-balance-eye"></i>
+                        </span>
+                    </div>
+                    <div class="text-4xl font-extrabold tracking-tight text-slate-100 flex items-center" id="card-balance-display">
+                        ₱0.00
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK LIQUIDITY MOVEMENT -->
+            <div class="rounded-2xl border border-emerald-900 bg-emerald-950/70 backdrop-blur-md p-5 shadow-xl">
+                <h3 class="font-bold text-md text-emerald-100 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-amber-400"></i>
+                    <span>Liquid Asset Transfers</span>
+                </h3>
+                <p class="text-xs text-emerald-400/80 mb-4">Send digital fiat instantly to members or record top-ups.</p>
+
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-1 bg-emerald-950 p-1 rounded-xl border border-emerald-900/40">
+                        <button onclick="window.setQuickTransferUI('send')" id="transfer-mode-send" class="py-1.5 text-center bg-emerald-600/10 border border-emerald-500/40 text-emerald-300 text-[10px] sm:text-xs rounded-lg font-semibold flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Send P2P
+                        </button>
+                        <button onclick="window.setQuickTransferUI('topup')" id="transfer-mode-topup" class="py-1.5 text-center bg-emerald-950 text-emerald-500 text-[10px] sm:text-xs rounded-lg font-semibold flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-circle-arrow-up"></i> Top Up
+                        </button>
+                    </div>
+
+                    <div class="bg-emerald-950/80 p-3 rounded-xl border border-emerald-900 space-y-2.5">
+                        <div class="flex justify-between items-center text-[10px] text-emerald-400">
+                            <span id="quick-action-label">Recipient Username or Phone</span>
+                            <span id="quick-action-type" class="uppercase text-emerald-400 font-bold">Sending</span>
+                        </div>
+                        
+                        <div id="recipient-input-container">
+                            <input type="text" id="quick-recipient" placeholder="Enter username or 11-digit mobile..." class="w-full bg-emerald-900/50 border border-emerald-800 rounded px-2.5 py-1.5 text-xs text-emerald-100 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-[9px] text-emerald-500 block mb-0.5">Amount (₱)</label>
+                                <input type="number" step="0.01" id="quick-amount" placeholder="0.00" class="w-full bg-emerald-900/50 border border-emerald-800 rounded px-2.5 py-1.5 text-xs text-emerald-100 focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="text-[9px] text-emerald-500 block mb-0.5">Category</label>
+                                <select id="quick-category" class="w-full bg-emerald-900/50 border border-emerald-800 rounded px-2.5 py-1.5 text-xs text-emerald-100 focus:outline-none focus:border-emerald-500"></select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-[8px] text-emerald-500 uppercase tracking-wider mb-1 font-bold">Quick Amounts</p>
+                            <div class="grid grid-cols-4 gap-1">
+                                <button type="button" onclick="window.setQuickAmountPreset(100)" class="py-1 text-center bg-emerald-900/40 hover:bg-emerald-800 border border-emerald-800 text-[10px] text-emerald-300 font-semibold rounded-md">₱100</button>
+                                <button type="button" onclick="window.setQuickAmountPreset(500)" class="py-1 text-center bg-emerald-900/40 hover:bg-emerald-800 border border-emerald-800 text-[10px] text-emerald-300 font-semibold rounded-md">₱500</button>
+                                <button type="button" onclick="window.setQuickAmountPreset(1000)" class="py-1 text-center bg-emerald-900/40 hover:bg-emerald-800 border border-emerald-800 text-[10px] text-emerald-300 font-semibold rounded-md">₱1K</button>
+                                <button type="button" onclick="window.setQuickAmountPreset(5000)" class="py-1 text-center bg-emerald-900/40 hover:bg-emerald-800 border border-emerald-800 text-[10px] text-emerald-300 font-semibold rounded-md">₱5K</button>
+                            </div>
+                        </div>
+
+                        <button onclick="window.executeQuickTransfer()" class="w-full py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-100 font-bold text-xs rounded-lg transition shadow-lg">
+                            Confirm Transaction & Dispatch Email Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEMBERS DIRECTORY -->
+            <div class="rounded-2xl border border-emerald-900 bg-emerald-950/70 backdrop-blur-md p-5 shadow-xl">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-users text-amber-400"></i>
+                    <h4 class="font-bold text-xs text-slate-200">Crocodile Members Directory</h4>
+                </div>
+                <p class="text-[10px] text-emerald-400/80 mb-3">Copy Username or Mobile to test real-time P2P transactions!</p>
+                <div id="members-directory-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+            </div>
+
+        </aside>
+
+        <!-- RIGHT COLUMN: MAIN METRICS AND CONTENT -->
+        <section id="dashboard-main" class="col-span-1 lg:col-span-8 flex flex-col gap-6">
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-emerald-950/70 backdrop-blur-md border border-emerald-900 p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold block mb-0.5">Net Worth Pool</span>
+                    <span class="text-xl font-bold text-slate-100" id="stat-balance">₱0.00</span>
+                    <span class="text-[9px] text-emerald-500 block mt-0.5" id="stat-balance-desc">Solvent Reserve</span>
+                    <div class="absolute right-3 bottom-3 text-emerald-500/10 text-3xl"><i class="fa-solid fa-coins"></i></div>
+                </div>
+
+                <div class="bg-emerald-950/70 backdrop-blur-md border border-emerald-900 p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] text-teal-400 uppercase tracking-wider font-semibold block mb-0.5">Total Inflows</span>
+                    <span class="text-xl font-bold text-teal-400" id="stat-income">₱0.00</span>
+                    <span class="text-[9px] text-emerald-500 block mt-0.5">Total deposits</span>
+                    <div class="absolute right-3 bottom-3 text-teal-500/10 text-3xl"><i class="fa-solid fa-circle-arrow-up"></i></div>
+                </div>
+
+                <div class="bg-emerald-950/70 backdrop-blur-md border border-emerald-900 p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] text-amber-500 uppercase tracking-wider font-semibold block mb-0.5">Total Outflows</span>
+                    <span class="text-xl font-bold text-amber-400" id="stat-expenses">₱0.00</span>
+                    <span class="text-[9px] text-emerald-500 block mt-0.5">Transactions out</span>
+                    <div class="absolute right-3 bottom-3 text-amber-500/10 text-3xl"><i class="fa-solid fa-circle-arrow-down"></i></div>
+                </div>
+
+                <div class="bg-emerald-950/70 backdrop-blur-md border border-emerald-900 p-4 rounded-xl relative overflow-hidden">
+                    <span class="text-[10px] text-emerald-300 uppercase tracking-wider font-semibold block mb-0.5">Retention Rate</span>
+                    <span class="text-xl font-bold text-emerald-300" id="stat-savings-rate">0.0%</span>
+                    <span class="text-[9px] text-emerald-500 block mt-0.5" id="stat-savings-desc">Locked-in capital</span>
+                    <div class="absolute right-3 bottom-3 text-emerald-500/10 text-3xl"><i class="fa-solid fa-shield-halved"></i></div>
+                </div>
+            </div>
+
+            <!-- SPEND TREND CHART -->
+            <div class="bg-emerald-950/70 backdrop-blur-md border border-emerald-900 p-5 rounded-2xl flex flex-col justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h4 class="font-bold text-emerald-100 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-amber-400"></i>
+                            <span>Apex Spending Velocity Tracker</span>
+                        </h4>
+                        <p class="text-xs text-emerald-400/70 mt-0.5">Time-based data compression for expenditure visualization</p>
+                    </div>
+                </div>
+
+                <div class="h-64 mt-2">
+                    <canvas id="spendTrendLineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- SAVINGS VAULT & CROC HABITAT -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                
+                <div class="md:col-span-6 bg-emerald-950/70 backdrop-blur-md border border-emerald-900 p-5 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-emerald-100 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-piggy-bank text-amber-400"></i>
+                            <span>SwampVault Savings</span>
+                        </h4>
+                        <p class="text-xs text-emerald-400/80 mb-3">Earn an incredible apex yield of 7.5% p.a.</p>
+                        
+                        <div class="bg-gradient-to-br from-emerald-900/60 to-emerald-950/90 text-emerald-100 rounded-xl p-4 border border-emerald-800 mt-2 space-y-2">
+                            <span class="text-[9px] font-extrabold tracking-wider opacity-75 uppercase">Locked Vault Capital</span>
+                            <div class="text-3xl font-black text-amber-400" id="swampvault-balance">₱0.00</div>
+                            <div class="flex justify-between items-center text-[10px] text-emerald-400">
+                                <span>Yield Rate: 7.5% p.a.</span>
+                                <span>Risk Profile: Minimal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 mt-4">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="window.setVaultMode('deposit')" id="vault-mode-deposit" class="py-1 px-3 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs rounded-lg font-bold transition w-full">Deposit</button>
+                            <button onclick="window.setVaultMode('withdraw')" id="vault-mode-withdraw" class="py-1 px-3 bg-emerald-950 text-emerald-500 text-xs rounded-lg font-bold transition w-full">Withdraw</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="vault-amount" placeholder="0.00" class="flex-grow bg-emerald-900/40 border border-emerald-800 rounded px-2.5 py-1 text-xs text-emerald-100 focus:outline-none focus:border-emerald-500">
+                            <button onclick="window.executeVaultAction()" class="px-4 py-1 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs rounded-lg transition shadow">Apply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-6 bg-emerald-950/70 backdrop-blur-md border border-emerald-900 p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-emerald-100 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-egg text-emerald-400"></i>
+                                <span>CrocHabitat Sanctuary</span>
+                            </h4>
+                            <span id="croc-badge" class="bg-amber-500 text-slate-900 text-[8px] font-extrabold px-1.5 py-0.5 rounded-full hidden animate-bounce">READY</span>
+                        </div>
+                        <p class="text-xs text-emerald-400/80">Make digital transactions to generate nature energy and evolve your reptile.</p>
+                    </div>
+
+                    <div class="bg-gradient-to-b from-teal-900/30 via-emerald-950/50 to-slate-950 rounded-xl p-3 h-32 flex flex-col justify-between items-center relative overflow-hidden border border-emerald-900/40 my-3">
+                        <div id="nature-bubble-holder" class="absolute top-2 left-6"></div>
+                        <div class="text-5xl select-none mt-4 transition-transform duration-500 hover:scale-110 cursor-pointer" onclick="window.claimReptileEnergy()" id="croc-stage-graphic">🥚</div>
+                        <div class="w-full flex justify-between items-end">
+                            <span class="text-[9px] bg-slate-900/60 px-2 py-0.5 rounded text-emerald-300 font-bold border border-emerald-800" id="croc-stage-desc">State: Reptile Egg</span>
+                            <span class="text-[9px] bg-emerald-600 px-2 py-0.5 rounded font-bold text-white shadow" id="croc-energy-counter">Energy: 0g</span>
+                        </div>
+                    </div>
+
+                    <button onclick="window.claimReptileEnergy()" id="claim-energy-btn" class="w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 text-slate-100 font-bold text-xs rounded-lg transition flex items-center justify-center gap-1.5 shadow">
+                        <i class="fa-solid fa-leaf"></i> Collect Nature Energy
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- LEDGER TABLE -->
+            <div class="bg-emerald-950/70 backdrop-blur-md border border-emerald-900 rounded-2xl overflow-hidden flex flex-col">
+                <div class="p-5 border-b border-emerald-900 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h4 class="font-bold text-emerald-100 flex items-center gap-2">
+                            <i class="fa-solid fa-receipt text-amber-500"></i>
+                            <span>Comprehensive Ledger Logs</span>
+                        </h4>
+                        <p class="text-xs text-emerald-400/80">Real-time dynamic statement auditing system</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        <input type="text" id="filter-search" oninput="window.renderApp()" placeholder="Search description..." class="bg-emerald-950/80 border border-emerald-900 text-xs px-3 py-2 rounded-lg text-emerald-200 focus:outline-none focus:border-emerald-500 w-full md:w-40">
+                        
+                        <select id="filter-type" onchange="window.renderApp()" class="bg-emerald-950/80 border border-emerald-900 text-xs px-2 py-2 rounded-lg text-emerald-200 focus:outline-none">
+                            <option value="all">All Movements</option>
+                            <option value="income">Inflows / Top ups</option>
+                            <option value="expense">Outflows / Purchases</option>
+                        </select>
+                        
+                        <select id="filter-cat" onchange="window.renderApp()" class="bg-emerald-950/80 border border-emerald-900 text-xs px-2 py-2 rounded-lg text-emerald-200 focus:outline-none">
+                            <option value="all">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-emerald-950/80 text-xs uppercase text-emerald-400 tracking-wider">
+                            <tr>
+                                <th class="px-5 py-3 font-bold">Details</th>
+                                <th class="px-5 py-3 font-bold">Category</th>
+                                <th class="px-5 py-3 font-bold">Timestamp</th>
+                                <th class="px-5 py-3 font-bold text-right">Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-rows" class="divide-y divide-emerald-950"></tbody>
+                    </table>
+                </div>
+                
+                <div class="p-4 bg-emerald-950/20 border-t border-emerald-900 flex justify-between items-center text-xs text-emerald-400">
+                    <span id="ledger-item-count">Showing 0 log streams</span>
+                    
+                    <div class="flex items-center gap-4">
+                        <button onclick="window.openManualTransactionModal()" class="text-emerald-400 hover:text-emerald-300 font-semibold transition flex items-center gap-1">
+                            <i class="fa-solid fa-circle-plus"></i> Manual Transaction
+                        </button>
+                        <span class="text-emerald-800">|</span>
+                        <button onclick="window.openPurgeModal()" class="text-rose-400 hover:text-rose-300 transition-colors flex items-center gap-1 font-semibold">
+                            <i class="fa-solid fa-trash-can"></i> Reset Ledger
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUDGET CAPS -->
+            <div id="budget-config-card" class="rounded-2xl border border-emerald-900 bg-emerald-950/70 backdrop-blur-md p-5 shadow-xl">
+                <h3 class="font-bold text-md text-emerald-100 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-amber-400"></i>
+                    <span>E-Wallet Categorical Budget Caps</span>
+                </h3>
+                <p class="text-xs text-emerald-400/80 mb-4">Track your spending limits against active thresholds.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="budget-setters-list"></div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FLOATING AI TRIGGER -->
+    <div id="ai-floating-trigger" class="fixed left-6 bottom-6 z-40 hidden">
+        <button onclick="window.toggleAIPanel(true)" class="w-14 h-14 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 flex items-center justify-center shadow-2xl transition duration-300 transform hover:scale-110 relative group animate-bounce">
+            <i class="fa-solid fa-robot text-xl"></i>
+            <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+            </span>
+            <span class="absolute left-16 scale-0 transition-all rounded bg-emerald-950 p-2 text-xs text-emerald-300 font-bold group-hover:scale-100 border border-emerald-800 whitespace-nowrap shadow-xl">
+                Ask AI Assistant
+            </span>
+        </button>
+    </div>
+
+    <!-- AI DRAWER -->
+    <div id="ai-drawer" class="fixed inset-y-0 left-0 w-full sm:w-96 bg-emerald-950/95 border-r border-emerald-900/60 z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col justify-between p-6 backdrop-blur-md">
+        <div class="flex flex-col h-full justify-between">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-400/30 text-emerald-400">
+                            <i class="fa-solid fa-robot animate-pulse"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-emerald-100">AI Financial Coach</h3>
+                            <p class="text-xs text-emerald-400/80 font-medium">Underpinned by Gemini Intelligence</p>
+                        </div>
+                    </div>
+                    <button onclick="window.toggleAIPanel(false)" class="text-emerald-400 hover:text-rose-400 text-xl p-1.5 bg-emerald-900/40 rounded-lg transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-emerald-900/30 p-3 rounded-xl border border-emerald-900/60 text-xs leading-relaxed max-h-[55vh] overflow-y-auto font-medium text-emerald-300 scrollbar-thin" id="ai-response-box">
+                        I am your professional financial coach. Click "Audit E-Wallet Metrics" to analyze your transactions, or type any question below!
+                    </div>
+
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-chat-input" placeholder="Ask about deposits, savings, or purpose..." class="flex-grow bg-emerald-900/40 border border-emerald-800 rounded-lg px-3 py-2 text-xs text-emerald-100 placeholder-emerald-700/60 focus:outline-none focus:border-emerald-500">
+                        <button onclick="window.sendAIChatMessage()" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-emerald-100 rounded-lg text-xs font-bold transition flex items-center justify-center" id="ai-chat-send-btn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="window.prefillAIChat('What is the purpose of this wallet?')" class="text-[9px] bg-emerald-900/20 border border-emerald-900/60 hover:border-emerald-700 text-emerald-400 px-2 py-1 rounded font-medium">Purpose?</button>
+                        <button onclick="window.prefillAIChat('How do I top up or deposit money?')" class="text-[9px] bg-emerald-900/20 border border-emerald-900/60 hover:border-emerald-700 text-emerald-400 px-2 py-1 rounded font-medium">How to deposit?</button>
+                        <button onclick="window.prefillAIChat('How does SwampVault Savings work?')" class="text-[9px] bg-emerald-900/20 border border-emerald-900/60 hover:border-emerald-700 text-emerald-400 px-2 py-1 rounded font-medium">Vault Savings?</button>
+                        <button onclick="window.prefillAIChat('How to grow my reptile in CrocHabitat?')" class="text-[9px] bg-emerald-900/20 border border-emerald-900/60 hover:border-emerald-700 text-emerald-400 px-2 py-1 rounded font-medium">CrocHabitat?</button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="window.fetchAICoaching()" class="w-full mt-4 py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold rounded-xl text-xs transition duration-300 shadow-lg flex items-center justify-center gap-2" id="ai-btn">
+                <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i>
+                <span>Audit E-Wallet Metrics</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST WRAPPER -->
+    <div id="notification-toast" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-slate-900 border border-emerald-800 text-slate-100 px-4 py-3 rounded-xl shadow-2xl opacity-0 transform translate-y-10 transition duration-300 pointer-events-none">
+        <div id="toast-icon-container" class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold"></div>
+        <div>
+            <p class="text-xs font-bold text-slate-100" id="toast-title">Notification</p>
+            <p class="text-[10px] text-slate-400 mt-0.5" id="toast-message">State changed.</p>
+        </div>
+    </div>
+
+    <!-- FIREBASE AND JS LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+        // IMPORT GEMINI AI SDK VIA CDN
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        // IMPORTANT: Replace this placeholder with your actual Gemini API Key from Google AI Studio
+        // If left empty or as "YOUR_GEMINI_API_KEY_HERE", the AI will automatically use the built-in Smart Local Bot.
+        const GEMINI_API_KEY = "AIzaSyCsPjXNH6hpO9CzAcr3kuF22lKcfoCRjfQ";
+
+        // FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxyqI4AFpIjDTN3gt5YreN8J5-UrJIcfA",
+            authDomain: "walletcrocs.firebaseapp.com",
+            databaseURL: "https://walletcrocs-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "walletcrocs",
+            storageBucket: "walletcrocs.firebasestorage.app",
+            messagingSenderId: "516866578623",
+            appId: "1:516866578623:web:60d3b71d31c9789a708e0a",
+            measurementId: "G-HS5EGT87F6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // EMAILJS CONFIGURATION
+        const EMAILJS_PUBLIC_KEY = "3-hyzSwBnkYvOkKdq";
+        const EMAILJS_SERVICE_ID = "service_bznl0xg";
+        const EMAILJS_OTP_TEMPLATE_ID = "template_9r0wfeo";
+        const EMAILJS_RECEIPT_TEMPLATE_ID = "template_2jvaakh";
+
+        if (window.emailjs && EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
+            try { emailjs.init(EMAILJS_PUBLIC_KEY); } catch(e) {}
+        }
+
+        async function sendReceiptEmail(recipientEmail, recipientName, txData) {
+            const receiptRef = "REC-" + Math.floor(100000 + Math.random() * 900000);
+            try {
+                if (window.emailjs && EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_RECEIPT_TEMPLATE_ID, {
+                        to_email: recipientEmail,
+                        to_name: recipientName,
+                        receipt_id: receiptRef,
+                        amount: `₱${parseFloat(txData.amount).toFixed(2)}`,
+                        category: txData.category,
+                        type: txData.type.toUpperCase(),
+                        description: txData.description,
+                        date: new Date().toLocaleString()
+                    });
+                }
+                return receiptRef;
+            } catch (err) {
+                console.error("EmailJS Receipt failed:", err);
+                return receiptRef;
+            }
+        }
+
+        const CATEGORIES = {
+            income: ["Salary", "Business Inflow", "Investments", "Direct Deposit", "Other Income"],
+            expense: ["Groceries", "Rent & Utilities", "Dining Out", "Healthcare", "Shopping", "Hardware & Home", "Tech & Subscriptions", "Transportation"]
+        };
+
+        let globalUsers = {};
+        let currentUser = null;
+        let spendTrendLineChartInstance = null;
+        let hideBalance = false;
+        let activeVaultMode = 'deposit';
+
+        function initApp() {
+            onValue(ref(db, 'users'), (snapshot) => {
+                if (snapshot.exists()) {
+                    globalUsers = snapshot.val();
+                    ensureInitialCapitalForAll();
+                } else {
+                    globalUsers = {};
+                }
+                if (currentUser && globalUsers[currentUser]) {
+                    window.renderApp();
+                }
+            });
+            checkActiveSession();
+            initializeChart();
+        }
+
+        function ensureInitialCapitalForAll() {
+            let hasChanges = false;
+            const dbUpdates = {};
+            
+            Object.keys(globalUsers).forEach(u => {
+                const userObj = globalUsers[u];
+                if (!userObj.transactions) userObj.transactions = [];
+                const hasInit = userObj.transactions.some(t => t.id === 'init_capital_5000');
+                if (!hasInit) {
+                    userObj.transactions.unshift({
+                        id: 'init_capital_5000',
+                        date: new Date().toISOString().split('T')[0],
+                        description: 'Initial Starter Deposit',
+                        category: 'Direct Deposit',
+                        amount: 5000,
+                        type: 'income',
+                        walletId: userObj.activeWalletId || 'default'
+                    });
+                    dbUpdates['users/' + u] = userObj;
+                    hasChanges = true;
+                }
+            });
+
+            if (hasChanges) {
+                update(ref(db), dbUpdates).catch(err => console.error("Initial load sync failed:", err));
+            }
+        }
+
+        async function persistUserState(username, explicitDataObj = null) {
+            const dataToSave = explicitDataObj || globalUsers[username];
+            if (!username || !dataToSave) return;
+            try {
+                await set(ref(db, 'users/' + username), dataToSave);
+            } catch (e) {
+                console.error("Firebase sync failed:", e);
+            }
+        }
+
+        function checkActiveSession() {
+            const activeSession = localStorage.getItem('croc_active_user_session');
+            if (activeSession && globalUsers[activeSession]) {
+                currentUser = activeSession;
+                showAppInterface();
+            } else {
+                showAuthInterface();
+            }
+        }
+
+        window.toggleAuthMode = function(mode) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const resetForm = document.getElementById('reset-form');
+            const authTabs = document.getElementById('auth-tabs');
+
+            authTabs.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            registerForm.classList.add('hidden');
+            resetForm.classList.add('hidden');
+
+            if (mode === 'login') {
+                tabLogin.className = "flex-1 py-2 text-center rounded-md font-bold transition duration-200 bg-emerald-500 text-slate-950";
+                tabRegister.className = "flex-1 py-2 text-center rounded-md font-bold transition duration-200 text-emerald-400 hover:text-emerald-200";
+                loginForm.classList.remove('hidden');
+            } else if (mode === 'register') {
+                tabLogin.className = "flex-1 py-2 text-center rounded-md font-bold transition duration-200 text-emerald-400 hover:text-emerald-200";
+                tabRegister.className = "flex-1 py-2 text-center rounded-md font-bold transition duration-200 bg-emerald-500 text-slate-950";
+                registerForm.classList.remove('hidden');
+            } else if (mode === 'forgot') {
+                authTabs.classList.add('hidden');
+                resetForm.classList.remove('hidden');
+            }
+        };
+
+        window.togglePasswordVisibility = function(id, btn) {
+            const input = document.getElementById(id);
+            if (!input) return;
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        };
+
+        window.handleResetPassword = async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('reset-user').value.trim().toLowerCase();
+            const email = document.getElementById('reset-email').value.trim().toLowerCase();
+            const newPass = document.getElementById('reset-pass').value;
+            const confirmPass = document.getElementById('reset-pass-confirm').value;
+
+            if (!globalUsers[username] || globalUsers[username].email !== email) {
+                showToast("Reset Failed", "Username or email mismatched.", "error");
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                showToast("Mismatch", "Passwords do not match.", "error");
+                return;
+            }
+
+            const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+            try {
+                if (window.emailjs && EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
+                    showToast("Sending OTP...", "Please wait.", "info");
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_OTP_TEMPLATE_ID, {
+                        to_email: email,
+                        to_name: globalUsers[username].name,
+                        otp_code: otpCode
+                    });
+                }
+            } catch (err) {
+                showToast("Email Error", "Could not send OTP. Try again later.", "error");
+                console.error(err);
+                return;
+            }
+
+            const userEnteredOTP = prompt("An OTP was sent to your registered email. Enter the 6-digit code to confirm password reset:");
+
+            if (userEnteredOTP === otpCode) {
+                globalUsers[username].password = newPass;
+                await persistUserState(username);
+                showToast("Password Reset", "Credentials updated successfully! Please login.", "success");
+                
+                document.getElementById('reset-user').value = '';
+                document.getElementById('reset-email').value = '';
+                document.getElementById('reset-pass').value = '';
+                document.getElementById('reset-pass-confirm').value = '';
+                window.toggleAuthMode('login');
+            } else {
+                showToast("Verification Failed", "Incorrect OTP. Password reset aborted.", "error");
+            }
+        };
+
+        window.handleRegister = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const age = parseInt(document.getElementById('reg-age').value);
+            const phone = document.getElementById('reg-phone').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const address = document.getElementById('reg-address').value.trim();
+            const username = document.getElementById('reg-user').value.trim().toLowerCase();
+            const password = document.getElementById('reg-pass').value;
+            const passwordConfirm = document.getElementById('reg-pass-confirm').value;
+
+            if (password !== passwordConfirm) {
+                showToast("Mismatch", "Passwords do not match.", "error");
+                return;
+            }
+
+            if (globalUsers[username]) {
+                showToast("Exists", "Username is already taken.", "warning");
+                return;
+            }
+
+            const defaultWalletId = 'w_user_' + Date.now();
+            globalUsers[username] = {
+                username, password, name, age, phone, email, address,
+                wallets: [{
+                    id: defaultWalletId,
+                    name: "Main Wallet",
+                    balance: 5000.00,
+                    theme: 'emerald',
+                    cardNo: "3200 " + Math.floor(1000 + Math.random() * 9000) + " 8888 1234",
+                    cvc: "888",
+                    expiry: "12/32"
+                }],
+                activeWalletId: defaultWalletId,
+                transactions: [{
+                    id: 'init_capital_5000',
+                    date: new Date().toISOString().split('T')[0],
+                    description: 'Initial Starter Deposit',
+                    category: 'Direct Deposit',
+                    amount: 5000,
+                    type: 'income',
+                    walletId: defaultWalletId
+                }],
+                budgets: { "Groceries": 5000, "Rent & Utilities": 15000 },
+                vaultBalance: 0.00, natureEnergy: 0, unclaimedEnergy: 0, spendAggregation: 'day'
+            };
+
+            await persistUserState(username);
+            showToast("Account Ready", "Registration complete! Default ₱5,000 balance loaded.", "success");
+            window.toggleAuthMode('login');
+        };
+
+        window.handleLogin = function(e) {
+            e.preventDefault();
+            const input = document.getElementById('login-user').value.trim().toLowerCase();
+            const password = document.getElementById('login-pass').value;
+
+            let matched = globalUsers[input] ? input : Object.keys(globalUsers).find(u => globalUsers[u].email && globalUsers[u].email.toLowerCase() === input);
+
+            if (!matched || globalUsers[matched].password !== password) {
+                showToast("Access Denied", "Invalid username or password.", "error");
+                return;
+            }
+
+            currentUser = matched;
+            localStorage.setItem('croc_active_user_session', matched);
+            showAppInterface();
+            showToast("Welcome", `Logged in as ${globalUsers[currentUser].name}`, "success");
+        };
+
+        window.handleLogout = function() {
+            currentUser = null;
+            localStorage.removeItem('croc_active_user_session');
+            showAuthInterface();
+            showToast("Signed Out", "Session ended.", "info");
+        };
+
+        function showAuthInterface() {
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('app-nav').classList.add('hidden');
+            document.getElementById('app-container').classList.add('hidden');
+            document.getElementById('ai-floating-trigger').classList.add('hidden');
+            document.getElementById('dashboard-bg-anims').classList.add('hidden');
+        }
+
+        function showAppInterface() {
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('app-nav').classList.remove('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+            document.getElementById('ai-floating-trigger').classList.remove('hidden');
+            document.getElementById('dashboard-bg-anims').classList.remove('hidden');
+            initializeControlOptions();
+            window.setQuickTransferUI('send'); 
+            window.renderApp();
+        }
+
+        function initializeControlOptions() {
+            const filterCat = document.getElementById('filter-cat');
+            if (filterCat) {
+                filterCat.innerHTML = '<option value="all">All Categories</option>';
+                [...CATEGORIES.income, ...CATEGORIES.expense].forEach(cat => {
+                    filterCat.innerHTML += `<option value="${cat}">${cat}</option>`;
+                });
+            }
+        }
+
+        window.toggleCardBalanceVisibility = function() {
+            hideBalance = !hideBalance;
+            window.renderApp();
+        };
+
+        window.openProfileModal = () => {
+            const user = globalUsers[currentUser];
+            document.getElementById('profile-name').innerText = user.name;
+            document.getElementById('profile-age').innerText = user.age + " yrs";
+            document.getElementById('profile-email').innerText = user.email;
+            document.getElementById('profile-phone').innerText = user.phone;
+            document.getElementById('profile-address').innerText = user.address;
+            document.getElementById('profile-modal').classList.remove('hidden');
+            document.getElementById('profile-modal').classList.add('flex');
+        };
+        window.closeProfileModal = () => {
+            document.getElementById('profile-modal').classList.add('hidden');
+            document.getElementById('profile-modal').classList.remove('flex');
+        };
+
+        window.openPurgeModal = () => {
+            document.getElementById('purge-confirm-modal').classList.remove('hidden');
+            document.getElementById('purge-confirm-modal').classList.add('flex');
+        };
+        window.closePurgeModal = () => {
+            document.getElementById('purge-confirm-modal').classList.add('hidden');
+            document.getElementById('purge-confirm-modal').classList.remove('flex');
+        };
+        window.executePurgeHistory = async () => {
+            if(!currentUser) return;
+            const user = globalUsers[currentUser];
+            user.transactions = [{
+                id: 'init_capital_5000',
+                date: new Date().toISOString().split('T')[0],
+                description: 'Initial Starter Deposit',
+                category: 'Direct Deposit',
+                amount: 5000,
+                type: 'income',
+                walletId: user.activeWalletId || 'default'
+            }];
+            await persistUserState(currentUser);
+            window.closePurgeModal();
+            window.renderApp();
+            showToast("Ledger Reset", "History reset to ₱5,000.00 initial balance.", "info");
+        };
+
+        window.setQuickTransferUI = (mode) => {
+            const user = globalUsers[currentUser];
+            if(user) user.quickTransferMode = mode;
+            
+            const btnSend = document.getElementById('transfer-mode-send');
+            const btnTopup = document.getElementById('transfer-mode-topup');
+            const typeLabel = document.getElementById('quick-action-type');
+            const recipientContainer = document.getElementById('recipient-input-container');
+
+            if(mode === 'send') {
+                btnSend.className = "py-1.5 text-center bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-[10px] sm:text-xs rounded-lg font-semibold flex items-center justify-center gap-1";
+                btnTopup.className = "py-1.5 text-center bg-emerald-950 text-emerald-500 text-[10px] sm:text-xs rounded-lg font-semibold flex items-center justify-center gap-1";
+                typeLabel.innerText = "SENDING (EXPENSE)";
+                recipientContainer.classList.remove('hidden');
+            } else {
+                btnTopup.className = "py-1.5 text-center bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 text-[10px] sm:text-xs rounded-lg font-semibold flex items-center justify-center gap-1";
+                btnSend.className = "py-1.5 text-center bg-emerald-950 text-emerald-500 text-[10px] sm:text-xs rounded-lg font-semibold flex items-center justify-center gap-1";
+                typeLabel.innerText = "TOP UP (INCOME)";
+                recipientContainer.classList.add('hidden');
+            }
+
+            const catSelect = document.getElementById('quick-category');
+            catSelect.innerHTML = '';
+            const cats = mode === 'topup' ? CATEGORIES.income : CATEGORIES.expense;
+            cats.forEach(c => catSelect.innerHTML += `<option value="${c}">${c}</option>`);
+        };
+
+        window.setQuickAmountPreset = (amt) => {
+            document.getElementById('quick-amount').value = amt;
+        };
+
+        window.executeQuickTransfer = async () => {
+            if (!currentUser || !globalUsers[currentUser]) return;
+            const sender = globalUsers[currentUser];
+            const amount = parseFloat(document.getElementById('quick-amount').value);
+            const category = document.getElementById('quick-category').value;
+
+            if (isNaN(amount) || amount <= 0) {
+                showToast("Invalid Amount", "Please enter a valid transfer amount.", "warning");
+                return;
+            }
+
+            // SELF TOP-UP
+            if (sender.quickTransferMode === 'topup') {
+                const activeWId = sender.activeWalletId || 'default';
+                const txData = { amount, category, type: 'income', description: 'Account Self Top-Up' };
+                if (!sender.transactions) sender.transactions = [];
+                sender.transactions.push({
+                    id: 'tx_topup_' + Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    description: txData.description,
+                    category, amount, type: 'income', walletId: activeWId
+                });
+                await persistUserState(currentUser, sender);
+                sendReceiptEmail(sender.email, sender.name, txData);
+                document.getElementById('quick-amount').value = '';
+                window.renderApp();
+                showToast("Top-Up Successful", `Added ₱${amount.toFixed(2)} to your balance.`, "success");
+                return;
+            }
+
+            // P2P TRANSFER 
+            const rawTargetInput = document.getElementById('quick-recipient').value.trim();
+            const cleanTarget = rawTargetInput.toLowerCase();
+            const senderBalance = calculateWalletBalance(sender);
+
+            if (!cleanTarget) {
+                showToast("Recipient Missing", "Please enter the recipient's username or phone number.", "warning");
+                return;
+            }
+
+            if (amount > senderBalance) {
+                showToast("Insufficient Balance", `Your current balance (₱${senderBalance.toFixed(2)}) is insufficient.`, "error");
+                return;
+            }
+
+            let receiverUsername = null;
+            for (let key in globalUsers) {
+                const u = globalUsers[key];
+                if (key.toLowerCase() === cleanTarget || 
+                    (u.username && u.username.toLowerCase() === cleanTarget) || 
+                    (u.phone && u.phone === cleanTarget) ||
+                    (u.email && u.email.toLowerCase() === cleanTarget)) {
+                    receiverUsername = key;
+                    break;
+                }
+            }
+
+            if (!receiverUsername || receiverUsername === currentUser) {
+                showToast("Recipient Error", "Invalid user or you cannot send funds to yourself.", "error");
+                return;
+            }
+
+            const receiver = globalUsers[receiverUsername];
+
+            // 1. Prepare Sender Deduction
+            const senderTx = {
+                id: 'tx_send_' + Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                description: `Sent to @${receiver.username}`,
+                category, amount, type: 'expense', walletId: sender.activeWalletId || 'default'
+            };
+            if (!sender.transactions) sender.transactions = [];
+            sender.transactions.push(senderTx);
+
+            // 2. Prepare Receiver Addition
+            const receiverTx = {
+                id: 'tx_recv_' + Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                description: `Received from @${sender.username}`,
+                category: "Other Income",
+                amount,
+                type: 'income',
+                walletId: receiver.activeWalletId || 'default'
+            };
+            if (!receiver.transactions) receiver.transactions = [];
+            receiver.transactions.push(receiverTx);
+
+            // ATOMIC DATABASE UPDATE
+            const dbUpdates = {};
+            dbUpdates['users/' + currentUser] = sender;
+            dbUpdates['users/' + receiverUsername] = receiver;
+            
+            try {
+                await update(ref(db), dbUpdates);
+            } catch (err) {
+                console.error("Atomic Update Failed:", err);
+                showToast("Transaction Error", "Failed to sync transaction with server.", "error");
+                return;
+            }
+            
+            sendReceiptEmail(sender.email, sender.name, senderTx);
+            sendReceiptEmail(receiver.email, receiver.name, receiverTx);
+
+            document.getElementById('quick-amount').value = '';
+            document.getElementById('quick-recipient').value = '';
+            window.renderApp();
+            showToast("Transfer Completed", `Successfully sent ₱${amount.toFixed(2)} to ${receiver.name}!`, "success");
+        };
+
+        window.openManualTransactionModal = () => {
+            document.getElementById('tx-date').valueAsDate = new Date();
+            window.setTxType('expense');
+            document.getElementById('manual-tx-modal').classList.remove('hidden');
+            document.getElementById('manual-tx-modal').classList.add('flex');
+        };
+
+        window.toggleManualTransactionModal = (show) => {
+             const modal = document.getElementById('manual-tx-modal');
+             if(show) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+             else { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+        };
+
+        window.setTxType = (type) => {
+             document.getElementById('transaction-form').dataset.type = type;
+             const btnInc = document.getElementById('type-btn-income');
+             const btnExp = document.getElementById('type-btn-expense');
+             
+             if(type === 'income') {
+                 btnInc.className = "py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 transition duration-200 bg-emerald-500/20 border-emerald-500/50 text-emerald-300";
+                 btnExp.className = "py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 transition duration-200 border-rose-900 text-rose-500/50";
+             } else {
+                 btnExp.className = "py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 transition duration-200 bg-rose-500/20 border-rose-500/50 text-rose-300";
+                 btnInc.className = "py-2 px-3 rounded-lg border text-xs font-semibold flex items-center justify-center gap-2 transition duration-200 border-emerald-900 text-emerald-500/50";
+             }
+
+             const catSelect = document.getElementById('tx-cat');
+             catSelect.innerHTML = '';
+             CATEGORIES[type].forEach(c => catSelect.innerHTML += `<option value="${c}">${c}</option>`);
+        };
+
+        window.handleTransactionSubmit = async (e) => {
+            e.preventDefault();
+            const user = globalUsers[currentUser];
+            const type = document.getElementById('transaction-form').dataset.type;
+            const desc = document.getElementById('tx-desc').value;
+            const amt = parseFloat(document.getElementById('tx-amount').value);
+            const date = document.getElementById('tx-date').value;
+            const cat = document.getElementById('tx-cat').value;
+
+            if(!user.transactions) user.transactions = [];
+            
+            const txData = { description: desc, category: cat, amount: amt, type: type };
+
+            user.transactions.push({
+                id: 'tx_' + Date.now(), date: date, description: desc, category: cat, amount: amt, type: type, walletId: user.activeWalletId || 'default'
+            });
+
+            await persistUserState(currentUser, user);
+            sendReceiptEmail(user.email, user.name, txData);
+
+            document.getElementById('tx-desc').value = '';
+            document.getElementById('tx-amount').value = '';
+            window.toggleManualTransactionModal(false);
+            window.renderApp();
+            showToast("Record Saved", "Transaction recorded and emailed.", "success");
+        };
+
+        window.setVaultMode = (mode) => {
+            activeVaultMode = mode;
+            const dBtn = document.getElementById('vault-mode-deposit');
+            const wBtn = document.getElementById('vault-mode-withdraw');
+            if(mode === 'deposit') {
+                dBtn.className = "py-1 px-3 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs rounded-lg font-bold transition w-full";
+                wBtn.className = "py-1 px-3 bg-emerald-950 text-emerald-500 text-xs rounded-lg font-bold transition w-full";
+            } else {
+                wBtn.className = "py-1 px-3 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs rounded-lg font-bold transition w-full";
+                dBtn.className = "py-1 px-3 bg-emerald-950 text-emerald-500 text-xs rounded-lg font-bold transition w-full";
+            }
+        };
+
+        window.executeVaultAction = async () => {
+            const user = globalUsers[currentUser];
+            const amt = parseFloat(document.getElementById('vault-amount').value);
+            if(isNaN(amt) || amt <= 0) return;
+
+            const currentLiquid = calculateWalletBalance(user);
+            if(!user.vaultBalance) user.vaultBalance = 0;
+
+            if(activeVaultMode === 'deposit') {
+                if(amt > currentLiquid) { showToast("Error", "Insufficient liquid funds.", "error"); return; }
+                user.vaultBalance += amt;
+                user.transactions.push({ id:'tx_'+Date.now(), date: new Date().toISOString().split('T')[0], description: "Transfer to Vault", category: "Investments", amount: amt, type: "expense", walletId: user.activeWalletId });
+            } else {
+                if(amt > user.vaultBalance) { showToast("Error", "Insufficient vault funds.", "error"); return; }
+                user.vaultBalance -= amt;
+                user.transactions.push({ id:'tx_'+Date.now(), date: new Date().toISOString().split('T')[0], description: "Withdraw from Vault", category: "Other Income", amount: amt, type: "income", walletId: user.activeWalletId });
+            }
+
+            await persistUserState(currentUser, user);
+            document.getElementById('vault-amount').value = '';
+            window.renderApp();
+            showToast("Vault Updated", "Transfer successful.", "success");
+        };
+
+        window.claimReptileEnergy = async () => {
+            const user = globalUsers[currentUser];
+            if(!user.natureEnergy) user.natureEnergy = 0;
+            user.natureEnergy += 5; 
+            
+            const croc = document.getElementById('croc-stage-graphic');
+            croc.classList.add('scale-125');
+            setTimeout(() => croc.classList.remove('scale-125'), 300);
+
+            await persistUserState(currentUser, user);
+            window.renderApp();
+            showToast("Energy Claimed", "+5 Nature Energy added!", "success");
+        };
+
+        window.toggleAIPanel = (show) => {
+            const drawer = document.getElementById('ai-drawer');
+            if (show) drawer.classList.remove('-translate-x-full');
+            else drawer.classList.add('-translate-x-full');
+        };
+        
+        window.prefillAIChat = (text) => {
+            document.getElementById('ai-chat-input').value = text;
+        };
+
+        // --- DYNAMIC AI INTEGRATION ---
+        
+        // Smart Local Bot Fallback (If no Gemini API key is provided)
+        function handleLocalAI(text) {
+            const lower = text.toLowerCase();
+            const user = globalUsers[currentUser];
+            const bal = calculateWalletBalance(user);
+
+            if (lower.includes("purpose") || lower.includes("about")) {
+                return "This wallet is a high-security digital asset platform designed for seamless P2P transfers, vault savings, and intelligent expenditure tracking.";
+            } else if (lower.includes("deposit") || lower.includes("top up")) {
+                return "You can deposit by using the 'Liquid Asset Transfers' panel on the dashboard. Click 'Top Up', enter your desired amount, and it will be added instantly.";
+            } else if (lower.includes("vault") || lower.includes("savings")) {
+                return `SwampVault lets you lock capital for a 7.5% annual yield. You currently have ₱${(user.vaultBalance || 0).toFixed(2)} in your vault. Use the panel on the dashboard to deposit or withdraw.`;
+            } else if (lower.includes("croc") || lower.includes("reptile") || lower.includes("habitat") || lower.includes("energy")) {
+                return `You currently have ${user.natureEnergy || 0}g of energy. Keep making transactions or click the 'Collect Nature Energy' button to evolve your reptile! 50g hatches the egg.`;
+            } else if (lower.includes("balance") || lower.includes("money") || lower.includes("how much")) {
+                return `Your current available liquid balance is ₱${bal.toFixed(2)}.`;
+            } else {
+                return "I am currently running in Local Mode. I can answer questions about your balance, deposits, the vault, or the reptile. For full conversational generative AI, add a Gemini API Key to the code!";
+            }
+        }
+
+        window.sendAIChatMessage = async () => {
+            const inputEl = document.getElementById('ai-chat-input');
+            const box = document.getElementById('ai-response-box');
+            const userText = inputEl.value.trim();
+            if(!userText) return;
+
+            box.innerHTML += `<div class="mt-3 border-t border-emerald-900 pt-2"><span class="text-amber-400 font-bold">You:</span> ${userText}</div>`;
+            inputEl.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            const loadingId = 'loading-' + Date.now();
+            box.innerHTML += `<div id="${loadingId}" class="mt-1 text-emerald-300"><span class="text-emerald-500 font-bold">AI Coach:</span> <i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing...</div>`;
+            box.scrollTop = box.scrollHeight;
+
+            try {
+                // If API Key is missing or default, use the Smart Local Bot
+                if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
+                    setTimeout(() => {
+                        document.getElementById(loadingId).remove();
+                        let response = handleLocalAI(userText);
+                        box.innerHTML += `<div class="mt-1 text-emerald-300"><span class="text-emerald-500 font-bold">AI Coach:</span> ${response}</div>`;
+                        box.scrollTop = box.scrollHeight;
+                    }, 600);
+                    return;
+                }
+
+                // If real API key is provided, use Google Generative AI
+                const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                
+                const user = globalUsers[currentUser];
+                const promptContext = `You are an expert AI financial coach integrated into Crocodile Wallet. The user's name is ${user.name}. Their current liquid balance is ₱${calculateWalletBalance(user)}. Their vault savings is ₱${user.vaultBalance || 0}. The user asked: "${userText}". Provide a concise, helpful, and friendly 1-2 sentence response.`;
+                
+                const result = await model.generateContent(promptContext);
+                const text = result.response.text();
+                
+                document.getElementById(loadingId).remove();
+                box.innerHTML += `<div class="mt-1 text-emerald-300"><span class="text-emerald-500 font-bold">AI Coach:</span> ${text}</div>`;
+                box.scrollTop = box.scrollHeight;
+
+            } catch(err) {
+                console.error("AI Error:", err);
+                document.getElementById(loadingId).remove();
+                box.innerHTML += `<div class="mt-1 text-rose-400"><span class="text-rose-500 font-bold">Error:</span> AI connection failed. Check your API key.</div>`;
+            }
+        };
+
+        window.fetchAICoaching = async () => {
+            const box = document.getElementById('ai-response-box');
+            const user = globalUsers[currentUser];
+            const balance = calculateWalletBalance(user);
+            
+            const loadingId = 'loading-audit-' + Date.now();
+            box.innerHTML += `<div id="${loadingId}" class="mt-3 border-t border-emerald-900 pt-2 text-emerald-300"><span class="text-emerald-500 font-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> Auditing:</span> <i class="fa-solid fa-circle-notch fa-spin"></i> Analyzing ledger history...</div>`;
+            box.scrollTop = box.scrollHeight;
+
+            try {
+                if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
+                    setTimeout(() => {
+                        document.getElementById(loadingId).remove();
+                        let response = `Your liquid balance is stable at ₱${balance.toFixed(2)} with ${(user.transactions || []).length} lifetime transactions logged. Keep transferring idle funds to SwampVault to maximize your 7.5% APY!`;
+                        box.innerHTML += `<div class="mt-3 border-t border-emerald-900 pt-2 text-emerald-300"><span class="text-emerald-500 font-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> Audit Complete:</span> ${response}</div>`;
+                        box.scrollTop = box.scrollHeight;
+                    }, 1000);
+                    return;
+                }
+
+                const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const promptContext = `You are a strict but helpful AI financial auditor. Here is the user data: Name: ${user.name}. Liquid Balance: ₱${balance}. Vault Savings: ₱${user.vaultBalance || 0}. Total Transactions: ${(user.transactions||[]).length}. Write a professional, encouraging 2-sentence financial audit giving them advice on their current standing.`;
+                
+                const result = await model.generateContent(promptContext);
+                const text = result.response.text();
+                
+                document.getElementById(loadingId).remove();
+                box.innerHTML += `<div class="mt-3 border-t border-emerald-900 pt-2 text-emerald-300"><span class="text-emerald-500 font-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> Audit Complete:</span> ${text}</div>`;
+                box.scrollTop = box.scrollHeight;
+
+            } catch(err) {
+                 console.error("Audit Error:", err);
+                 document.getElementById(loadingId).remove();
+                 box.innerHTML += `<div class="mt-1 text-rose-400"><span class="text-rose-500 font-bold">Error:</span> Audit processing failed.</div>`;
+            }
+        };
+
+        function calculateWalletBalance(userObj) {
+            const u = userObj || globalUsers[currentUser];
+            if (!u) return 0;
+            let totalIncome = 0;
+            let totalExpenses = 0;
+
+            (u.transactions || []).forEach(t => {
+                if (t.type === 'income') totalIncome += t.amount;
+                else if (t.type === 'expense') totalExpenses += t.amount;
+            });
+            return totalIncome - totalExpenses;
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('spendTrendLineChart');
+            if(ctx) {
+                spendTrendLineChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{ label: 'Outflows', data: [0,0,0,0,0,0,0], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', tension: 0.4, fill: true }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
+                });
+            }
+        }
+
+        window.renderApp = function() {
+            if (!currentUser || !globalUsers[currentUser]) return;
+            const user = globalUsers[currentUser];
+
+            document.getElementById('user-display-name').innerText = user.name;
+            document.getElementById('hub-phone-display').innerText = user.phone;
+            
+            const balance = calculateWalletBalance(user);
+            document.getElementById('card-balance-display').innerText = hideBalance ? '••••••••' : `₱${balance.toFixed(2)}`;
+            document.getElementById('stat-balance').innerText = `₱${balance.toFixed(2)}`;
+            document.getElementById('swampvault-balance').innerText = `₱${(user.vaultBalance || 0).toFixed(2)}`;
+
+            const dirList = document.getElementById('members-directory-list');
+            if (dirList) {
+                dirList.innerHTML = '';
+                Object.keys(globalUsers).forEach(uKey => {
+                    const member = globalUsers[uKey];
+                    if (uKey !== currentUser) {
+                        dirList.innerHTML += `
+                            <div class="flex items-center justify-between bg-emerald-900/30 p-2 rounded-lg border border-emerald-900/60 text-xs">
+                                <div>
+                                    <p class="font-bold text-slate-200">@${member.username}</p>
+                                    <p class="text-[9px] text-emerald-400 font-mono">${member.phone}</p>
+                                </div>
+                                <button onclick="document.getElementById('quick-recipient').value='${member.username}'" class="text-[9px] bg-emerald-700/60 hover:bg-emerald-600 text-emerald-200 px-2 py-1 rounded font-bold transition">
+                                    Copy Username
+                                </button>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            const energy = user.natureEnergy || 0;
+            document.getElementById('croc-energy-counter').innerText = `Energy: ${energy}g`;
+            if(energy >= 50) {
+                document.getElementById('croc-stage-graphic').innerText = "🦎";
+                document.getElementById('croc-stage-desc').innerText = "State: Hatchling";
+            } else {
+                document.getElementById('croc-stage-graphic').innerText = "🥚";
+                document.getElementById('croc-stage-desc').innerText = "State: Reptile Egg";
+            }
+
+            const searchQ = (document.getElementById('filter-search')?.value || "").toLowerCase();
+            const typeQ = document.getElementById('filter-type')?.value || "all";
+            const catQ = document.getElementById('filter-cat')?.value || "all";
+            
+            const tbody = document.getElementById('ledger-rows');
+            tbody.innerHTML = '';
+            
+            let txs = user.transactions || [];
+            let inTotal = 0, outTotal = 0;
+
+            txs.forEach(t => {
+                if(t.type === 'income') inTotal += t.amount;
+                else if(t.type === 'expense') outTotal += t.amount;
+            });
+
+            const filteredTxs = txs.filter(t => {
+                const matchSearch = t.description.toLowerCase().includes(searchQ);
+                const matchType = typeQ === 'all' || t.type === typeQ;
+                const matchCat = catQ === 'all' || t.category === catQ;
+                return matchSearch && matchType && matchCat;
+            }).reverse();
+
+            filteredTxs.forEach(t => {
+                const isInc = t.type === 'income';
+                const color = isInc ? 'text-emerald-400' : 'text-rose-400';
+                const sign = isInc ? '+' : '-';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-emerald-900/30 transition">
+                        <td class="px-5 py-3 font-semibold text-slate-200">${t.description}</td>
+                        <td class="px-5 py-3 text-emerald-400/80 text-[10px] uppercase font-bold tracking-wider">${t.category}</td>
+                        <td class="px-5 py-3 text-emerald-500 font-mono text-xs">${t.date}</td>
+                        <td class="px-5 py-3 text-right font-black ${color}">${sign}₱${t.amount.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            document.getElementById('ledger-item-count').innerText = `Showing ${filteredTxs.length} log streams`;
+            document.getElementById('stat-income').innerText = `₱${inTotal.toFixed(2)}`;
+            document.getElementById('stat-expenses').innerText = `₱${outTotal.toFixed(2)}`;
+            
+            const retRate = inTotal > 0 ? (((inTotal - outTotal) / inTotal) * 100).toFixed(1) : 0;
+            document.getElementById('stat-savings-rate').innerText = `${retRate}%`;
+
+            const bList = document.getElementById('budget-setters-list');
+            bList.innerHTML = '';
+            if(user.budgets) {
+                Object.keys(user.budgets).forEach(cat => {
+                    const cap = user.budgets[cat];
+                    let spent = 0;
+                    txs.forEach(t => { if(t.category === cat && t.type === 'expense') spent += t.amount; });
+                    const pct = Math.min(100, (spent/cap)*100);
+                    const bColor = pct > 90 ? 'bg-rose-500' : (pct > 75 ? 'bg-amber-400' : 'bg-emerald-500');
+                    bList.innerHTML += `
+                        <div class="bg-emerald-900/30 border border-emerald-800 p-3 rounded-xl">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">${cat}</span>
+                                <span class="text-[10px] font-mono text-slate-300">₱${spent.toFixed(0)} / ₱${cap}</span>
+                            </div>
+                            <div class="w-full bg-emerald-950 rounded-full h-1.5 mt-2 overflow-hidden border border-emerald-900">
+                                <div class="${bColor} h-1.5 rounded-full" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            if(spendTrendLineChartInstance && outTotal > 0) {
+                const dData = [Math.random()*outTotal, Math.random()*outTotal, Math.random()*outTotal, Math.random()*outTotal, Math.random()*outTotal, Math.random()*outTotal, outTotal*0.2];
+                spendTrendLineChartInstance.data.datasets[0].data = dData;
+                spendTrendLineChartInstance.update();
+            }
+        };
+
+        function showToast(title, message, theme = "success") {
+            const toast = document.getElementById('notification-toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3500);
+        }
+
+        document.addEventListener("DOMContentLoaded", initApp);
+    </script>
+</body>
+</html>
